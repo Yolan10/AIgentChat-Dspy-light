@@ -1,19 +1,33 @@
 # AIgentChat-Dspy-light
 
-This project provides a simplified backend demonstrating a multi-agent research system. It uses OpenAI via LangChain and DSPy for prompt optimization.
+This project provides a simplified backend demonstrating a multi-agent research system. It uses OpenAI through LangChain and DSPy for prompt optimization.
 
-## Usage
+- [Installation](docs/installation.md)
+- [Usage](docs/usage.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
-1. Install dependencies
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Create default templates if they do not exist
-   ```bash
-   python create_templates.py
-   ```
-3. Export your `OPENAI_API_KEY` and run the simulation
-   ```bash
-   export OPENAI_API_KEY=sk-...
-   python main.py
-   ```
+## Architecture Overview
+
+The core of the system lives in `integrated_system.py`. A `PopulationGenerator` first builds agent specifications which are used by the `GodAgent` to spawn `PopulationAgent` instances. A single `WizardAgent` converses with each population agent and submits logs to an `EnhancedJudgeAgent` for scoring. The `TokenTracker` and `StructuredLogger` record usage statistics and events.
+
+```
+PopulationGenerator -> GodAgent -> PopulationAgent
+                               \-> WizardAgent -> EnhancedJudgeAgent
+```
+
+`main.py` wires these components together and exposes a command line interface.
+
+## Quick Start
+
+Install dependencies and templates then run the analysis simulation:
+```bash
+pip install -r requirements.txt
+python create_templates.py  # if templates are missing
+export OPENAI_API_KEY=sk-...
+python main.py
+```
+
+To launch the (currently experimental) dashboard run:
+```bash
+python main.py --dashboard
+```
