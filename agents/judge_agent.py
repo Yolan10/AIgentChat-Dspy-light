@@ -1,7 +1,7 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
-from structured_logger import StructuredLogger
-from token_tracker import tracker
+from core.structured_logger import StructuredLogger
+from core.token_tracker import tracker
 
 class EnhancedJudgeAgent:
     def __init__(self, judge_id: str, improvement_interval: int = 20):

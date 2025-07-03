@@ -3,7 +3,7 @@ from typing import Dict
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
-from structured_logger import StructuredLogger
+from core.structured_logger import StructuredLogger
 
 class GodAgent:
     def __init__(self):
