@@ -17,3 +17,10 @@ This project provides a simplified backend demonstrating a multi-agent research 
    export OPENAI_API_KEY=sk-...
    python main.py
    ```
+
+## Logs
+
+All runtime logs are stored in the `logs/` directory. The folder is kept under version control using a `.gitkeep` file, while other log files are ignored via `.gitignore`.
+The main application writes to `logs/system.log` and `logs/token_usage.json`.
+
+Use the helper script `scripts/clean_logs.py` to archive or clear old log files.
