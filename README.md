@@ -10,7 +10,7 @@ This project provides a simplified backend demonstrating a multi-agent research 
    ```
 2. Create default templates if they do not exist
    ```bash
-   python create_templates.py
+   python scripts/create_templates.py
    ```
 3. Export your `OPENAI_API_KEY` and run the simulation
    ```bash

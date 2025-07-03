@@ -4,3 +4,4 @@ langchain
 numpy
 pandas
 dspy-ai
+pytest
