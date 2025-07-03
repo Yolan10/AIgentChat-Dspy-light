@@ -3,7 +3,7 @@ from typing import Dict
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
-from token_tracker import tracker
+from core.token_tracker import tracker
 
 @dataclass
 class PopulationAgent:

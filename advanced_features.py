@@ -4,8 +4,8 @@ from pathlib import Path
 from typing import List
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
-from structured_logger import StructuredLogger
-from utils import extract_json_array
+from core.structured_logger import StructuredLogger
+from core.utils import extract_json_array
 
 TEMPLATE_PATH = Path("templates/population_instruction.txt")
 

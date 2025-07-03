@@ -3,13 +3,13 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 import config
+from core.structured_logger import StructuredLogger
 from advanced_features import PopulationGenerator
-from structured_logger import StructuredLogger
 from agents.god_agent import GodAgent
 from agents.wizard_agent import WizardAgent
 from agents.judge_agent import EnhancedJudgeAgent
-from token_tracker import tracker
-from utils import ensure_logs_dir, increment_run_number
+from core.token_tracker import tracker
+from core.utils import ensure_logs_dir, increment_run_number
 
 class IntegratedSystem:
     def __init__(self):

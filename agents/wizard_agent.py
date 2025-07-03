@@ -5,8 +5,8 @@ from langchain.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 import config
-from token_tracker import tracker
-from structured_logger import StructuredLogger
+from core.token_tracker import tracker
+from core.structured_logger import StructuredLogger
 
 class WizardAgent:
     def __init__(self, wizard_id: str):

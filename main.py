@@ -1,8 +1,8 @@
 import argparse
 from pathlib import Path
 import config
-from utils import ensure_logs_dir
-from integrated_system import IntegratedSystem
+from core.utils import ensure_logs_dir
+from core.integrated_system import IntegratedSystem
 
 
 def validate_environment():
