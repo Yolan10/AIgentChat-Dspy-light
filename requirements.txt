@@ -1,6 +1,8 @@
 flask
 openai
 langchain
+langchain-community
+langchain-openai
 numpy
 pandas
 dspy-ai
