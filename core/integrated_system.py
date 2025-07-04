@@ -4,6 +4,7 @@ from typing import List
 
 import config
 from core.structured_logger import StructuredLogger
+from core.console_logger import ConsoleLogger
 from advanced_features import PopulationGenerator
 from agents.god_agent import GodAgent
 from agents.wizard_agent import WizardAgent
@@ -14,6 +15,7 @@ from core.utils import ensure_logs_dir, increment_run_number
 class IntegratedSystem:
     def __init__(self):
         self.logger = StructuredLogger()
+        self.console = ConsoleLogger()
         self.generator = PopulationGenerator()
         self.god = GodAgent()
         self.wizard = WizardAgent(wizard_id="Wizard_001")
@@ -33,6 +35,9 @@ class IntegratedSystem:
                 with self.lock:
                     self.completed_judgments.append((conv_log, result))
                 self.wizard.add_judge_feedback(result)
+                self.console.log(
+                    f"Judged {conv_log.get('pop_agent_id')} -> {result.get('overall')}"
+                )
             else:
                 threading.Event().wait(0.1)
 
@@ -45,6 +50,7 @@ class IntegratedSystem:
 
     def run(self):
         run_no = increment_run_number()
+        self.console.log(f"Starting run {run_no}")
         self.logger.log(
             "run_start",
             run_no=run_no,
@@ -75,3 +81,5 @@ class IntegratedSystem:
             prompt_tokens=totals["prompt"],
             completion_tokens=totals["completion"],
         )
+        self.console.log(f"Run {run_no} complete. Avg score {avg:.2f}")
+

@@ -8,12 +8,14 @@ import config
 from core.token_tracker import tracker
 from core.utils import get_usage_tokens
 from core.structured_logger import StructuredLogger
+from core.console_logger import ConsoleLogger
 
 class WizardAgent:
     def __init__(self, wizard_id: str):
         self.wizard_id = wizard_id
         self.llm = ChatOpenAI()
         self.logger = StructuredLogger()
+        self.console = ConsoleLogger()
         self.history_buffer = deque(maxlen=config.HISTORY_BUFFER_LIMIT)
         self.current_prompt = Path("templates/research_wizard_prompt.txt").read_text() if Path("templates/research_wizard_prompt.txt").exists() else "You are a helpful researcher."
         self.conversation_count = 0
@@ -24,6 +26,7 @@ class WizardAgent:
     def converse_with(self, pop_agent) -> Dict:
         log = {"wizard_id": self.wizard_id, "pop_agent_id": pop_agent.agent_id, "turns": []}
         self.logger.log("conversation_start", agent_id=pop_agent.agent_id)
+        self.console.log(f"Conversation with {pop_agent.agent_id} started")
         intro = pop_agent.introduce()
         log["turns"].append({"speaker": "pop", "text": intro})
 
@@ -42,6 +45,7 @@ class WizardAgent:
                 wizard_reply=wizard_reply,
                 pop_reply=pop_resp,
             )
+            self.console.log(f"W: {wizard_reply[:50]} | A: {pop_resp[:50]}")
             message_history.append(HumanMessage(content=pop_resp))
         self.conversation_count += 1
         self.history_buffer.append(log)
@@ -50,13 +54,17 @@ class WizardAgent:
             agent_id=pop_agent.agent_id,
             turns=len(log["turns"]),
         )
+        self.console.log(f"Conversation with {pop_agent.agent_id} ended")
         return log
 
     def add_judge_feedback(self, result: Dict):
         self.logger.log("judge_feedback", **result)
+        self.console.log(f"Judge scored {result}")
 
     def _should_self_improve(self) -> bool:
         return self.conversation_count in config.SELF_IMPROVE_AFTER
 
     def self_improve(self):
         self.logger.log("self_improve", step=self.conversation_count)
+        self.console.log(f"Self improve step {self.conversation_count}")
+
