@@ -1,7 +1,7 @@
 from pathlib import Path
 from collections import deque
 from typing import List, Dict
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 import config

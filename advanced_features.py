@@ -2,7 +2,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import List
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
 from core.structured_logger import StructuredLogger
 from core.utils import extract_json_array
