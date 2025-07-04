@@ -17,5 +17,6 @@ After the run, execute `scripts/analyze_results.py` to summarize log data.
 python main.py --dashboard
 ```
 
-The dashboard is currently a placeholder and will simply print a message that it is not yet implemented.
+This will start a minimal Flask application that serves a placeholder page at the root URL.
+
 

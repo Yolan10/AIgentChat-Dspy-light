@@ -3,6 +3,7 @@ from pathlib import Path
 import config
 from core.utils import ensure_logs_dir
 from core.integrated_system import IntegratedSystem
+from web import create_app
 
 
 def validate_environment():
@@ -33,7 +34,8 @@ def main():
     parser.add_argument("--dashboard", action="store_true")
     args = parser.parse_args()
     if args.dashboard:
-        print("Dashboard not implemented")
+        app = create_app()
+        app.run(debug=True)
     else:
         run_simulation()
 
