@@ -24,7 +24,8 @@ Install dependencies and templates then run the analysis simulation:
 ```bash
 pip install -r requirements.txt
 python scripts/create_templates.py  # if templates are missing
-export OPENAI_API_KEY=sk-...
+# create a .env file or export the API key
+echo "OPENAI_API_KEY=sk-..." > .env
 python main.py
 ```
 

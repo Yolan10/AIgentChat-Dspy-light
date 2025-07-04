@@ -1,7 +1,7 @@
 # Configuration
 
 The application can be customized through environment variables.
-These variables can be set in a `.env` file or exported in your shell.
+Variables defined in a `.env` file are loaded automatically, or you can export them in your shell.
 
 | Variable | Description | Default |
 |----------|-------------|---------|

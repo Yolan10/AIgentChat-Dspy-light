@@ -1,5 +1,11 @@
 import os
 from typing import List
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from a .env file if present. This must happen
+# before accessing os.environ so that configuration below picks up the values.
+load_dotenv(dotenv_path=Path(__file__).with_name('.env'), override=False)
 
 # Basic configuration loaded from environment variables
 POPULATION_SIZE = int(os.environ.get("POPULATION_SIZE", 36))
