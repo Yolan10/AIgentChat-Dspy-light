@@ -1,6 +1,8 @@
 from pathlib import Path
 from collections import deque
-from typing import List, Dict
+from typing import List, Dict, Iterable
+import dspy
+from dspy.teleprompt import MIPROv2
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
@@ -9,6 +11,16 @@ from core.token_tracker import tracker
 from core.utils import get_usage_tokens
 from core.structured_logger import StructuredLogger
 from core.console_logger import ConsoleLogger
+
+
+def build_dataset(logs: Iterable[Dict]) -> List[dspy.Example]:
+    """Convert conversation logs with scores into a DSPy dataset."""
+    dataset: List[dspy.Example] = []
+    for log in logs:
+        score = log.get("score") or log.get("overall") or 0.0
+        conversation = " ".join(turn.get("text", "") for turn in log.get("turns", []))
+        dataset.append(dspy.Example(conversation=conversation, score=score))
+    return dataset
 
 class WizardAgent:
     def __init__(self, wizard_id: str):
@@ -67,4 +79,9 @@ class WizardAgent:
     def self_improve(self):
         self.logger.log("self_improve", step=self.conversation_count)
         self.console.log(f"Self improve step {self.conversation_count}")
+        dataset = build_dataset(self.history_buffer)
+        optimizer = MIPROv2(metric=lambda ex: ex.score)
+        new_prompt = optimizer.compile(self.current_prompt, trainset=dataset)
+        if isinstance(new_prompt, str):
+            self.current_prompt = new_prompt
 
