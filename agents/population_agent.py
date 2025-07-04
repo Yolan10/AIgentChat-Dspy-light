@@ -18,11 +18,17 @@ class PopulationAgent:
         prompt = [SystemMessage(content=self.system_instruction),
                   HumanMessage(content="Introduce yourself briefly.")]
         resp = self.llm.invoke(prompt)
-        tracker.add_usage(resp.usage.prompt_tokens, resp.usage.completion_tokens)
+        if getattr(resp, "usage_metadata", None):
+            tracker.add_usage(resp.usage_metadata.input_tokens,
+                             resp.usage_metadata.output_tokens)
         return resp.content
 
     def respond_to(self, message: str) -> str:
-        resp = self.llm.invoke([SystemMessage(content=self.system_instruction),
-                               HumanMessage(content=message)])
-        tracker.add_usage(resp.usage.prompt_tokens, resp.usage.completion_tokens)
+        resp = self.llm.invoke([
+            SystemMessage(content=self.system_instruction),
+            HumanMessage(content=message),
+        ])
+        if getattr(resp, "usage_metadata", None):
+            tracker.add_usage(resp.usage_metadata.input_tokens,
+                             resp.usage_metadata.output_tokens)
         return resp.content

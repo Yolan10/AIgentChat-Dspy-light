@@ -13,7 +13,11 @@ class EnhancedJudgeAgent:
     def judge(self, conversation_log: dict) -> dict:
         prompt = f"Evaluate the following conversation: {conversation_log}"
         resp = self.llm.invoke([HumanMessage(content=prompt)])
-        tracker.add_usage(resp.usage.prompt_tokens, resp.usage.completion_tokens)
+        if getattr(resp, "usage_metadata", None):
+            tracker.add_usage(
+                resp.usage_metadata.input_tokens,
+                resp.usage_metadata.output_tokens,
+            )
         result = {"overall": 0.8, "success": True}
         self.logger.log("judged", result=result)
         return result
