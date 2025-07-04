@@ -1,6 +1,6 @@
 from pathlib import Path
 from collections import deque
-from typing import List, Dict
+from typing import Dict
 
 from core import dspy_utils
 from langchain_openai import ChatOpenAI
