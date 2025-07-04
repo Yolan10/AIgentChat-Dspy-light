@@ -1,6 +1,6 @@
 # Usage
 
-This project demonstrates a simplified multi-agent research system. Once the dependencies are installed and the `OPENAI_API_KEY` is exported, you can run the simulation or launch the dashboard.
+This project demonstrates a simplified multi-agent research system. Once the dependencies are installed and the `OPENAI_API_KEY` is available (either exported or placed in a `.env` file), you can run the simulation or launch the dashboard.
 
 ## Running the analysis simulation
 

@@ -12,11 +12,11 @@ Follow these steps to set up the project locally.
    pip install -r requirements.txt
    ```
 3. Optionally create default templates if you have not done so.
-   ```bash
-   python scripts/create_templates.py
-   ```
-4. Set your OpenAI API key.
-   ```bash
-   export OPENAI_API_KEY=sk-...
-   ```
+ ```bash
+ python scripts/create_templates.py
+ ```
+4. Set your OpenAI API key in a `.env` file or export it.
+  ```bash
+  echo "OPENAI_API_KEY=sk-..." > .env
+  ```
 

@@ -3,9 +3,9 @@
 Common issues and how to resolve them.
 
 ## Missing OpenAI key
-If you encounter `Missing OPENAI_API_KEY` errors, ensure that the environment variable is set:
+If you encounter `Missing OPENAI_API_KEY` errors, ensure that the environment variable is set or present in a `.env` file:
 ```bash
-export OPENAI_API_KEY=sk-...
+echo "OPENAI_API_KEY=sk-..." > .env
 ```
 
 ## Templates not found
