@@ -4,7 +4,7 @@ The project includes a small helper in `core/dspy_utils.py` for refining DSPy pr
 
 ## `apply_dspy_optimizer`
 
-`apply_dspy_optimizer(student, metric, trainset)` runs DSPy's `BootstrapFewShot` and
+`apply_dspy_optimizer(program, metric, trainset)` runs DSPy's `BootstrapFewShot` and
 `MIPROv2` optimizers using batch sizes defined in `config.py`. It returns the
 optimized DSPy program.
 
@@ -19,8 +19,8 @@ def metric(example, pred):
     return 1.0  # implement your scoring logic
 
 agent = PopulationAgent(agent_id="A1", system_instruction="...", spec={})
-student_program = agent.system_instruction  # or a DSPy Module producing it
-optimized = apply_dspy_optimizer(student_program, metric, trainset=["demo"])
+dspy_program = agent.system_instruction  # or a DSPy Module producing it
+optimized = apply_dspy_optimizer(dspy_program, metric, trainset=["demo"])
 ```
 
 Replace `metric` and `trainset` with your own evaluation function and examples.
