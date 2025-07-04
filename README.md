@@ -78,6 +78,8 @@ This will start a simple Flask app that displays a placeholder page.
 All runtime logs are stored in the `logs/` directory. The folder is kept under version control using a `.gitkeep` file, while other log files are ignored via `.gitignore`.
 The main application writes to `logs/system.log` and `logs/token_usage.json`.
 `StructuredLogger` and the token tracker automatically create the `logs/` directory if it is missing.
+Console output is controlled by the `LOG_LEVEL` environment variable and mirrors
+the structured entries written to `logs/system.log`.
 
 Use the helper script `scripts/clean_logs.py` to archive or clear old log files.
 Use `scripts/analyze_results.py` to summarize log statistics.
