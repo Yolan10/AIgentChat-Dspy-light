@@ -1,6 +1,10 @@
 import json
 from core import utils
 from core import token_tracker
+import dspy
+from dspy.datasets.dataset import Dataset
+from dspy.teleprompt.mipro_optimizer_v2 import MIPROv2
+from core.dspy_utils import apply_dspy_optimizer
 
 
 def test_extract_json_array_valid():
@@ -36,3 +40,33 @@ def test_token_tracker_add_usage(tmp_path, monkeypatch):
 
     data = json.loads(log_file.read_text())
     assert data == {"1": {"prompt": 3, "completion": 4}}
+
+
+def test_apply_optimizer_invokes_compile(monkeypatch):
+    examples = [
+        dspy.Example(conversation="hi", score=0.5),
+        dspy.Example(conversation="bye", score=0.9),
+    ]
+
+    ds = Dataset(train_size=len(examples), dev_size=0, test_size=0, input_keys=["conversation"])
+    ds._train = examples
+    ds._dev = []
+    ds._test = []
+
+    monkeypatch.setattr("core.dspy_utils.build_dataset", lambda history: ds)
+    monkeypatch.setattr("core.dspy_utils.get_miprov2", lambda metric, **k: MIPROv2(metric))
+
+    called = {"flag": False}
+    improved = "better"
+
+    def fake_compile(self, prompt, *, trainset):
+        called["flag"] = True
+        return improved
+
+    monkeypatch.setattr(MIPROv2, "compile", fake_compile)
+
+    result = apply_dspy_optimizer("orig", ["irrelevant"])
+
+    assert called["flag"]
+    assert result == improved
+    assert result != "orig"
