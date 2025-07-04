@@ -4,6 +4,7 @@ from typing import Iterable, Any
 
 from dspy.datasets.dataset import Dataset
 from dspy.teleprompt.mipro_optimizer_v2 import MIPROv2
+import dspy
 
 import config
 
@@ -27,12 +28,14 @@ def build_dataset(history: deque) -> Dataset:
             continue
 
         turns = conv_log.get("turns", [])
-        convo = "\n".join(f"{t.get('speaker')}: {t.get('text')}" for t in turns)
+        convo = "\n".join(
+            f"{t.get('speaker')}: {t.get('text')}" for t in turns
+        )
         if isinstance(score, dict):
             score_val = score.get("overall")
         else:
             score_val = score
-        records.append({"conversation": convo, "score": score_val})
+        records.append(dspy.Example(conversation=convo, score=score_val))
 
     ds = Dataset(train_size=len(records), dev_size=0, test_size=0, input_keys=["conversation"])
     ds._train = records
