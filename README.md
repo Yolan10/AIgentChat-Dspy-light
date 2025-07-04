@@ -4,6 +4,7 @@ This project provides a simplified backend demonstrating a multi-agent research 
 
 - [Installation](docs/installation.md)
 - [Usage](docs/usage.md)
+- [Configuration](docs/configuration.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
 ## Architecture Overview
@@ -30,8 +31,10 @@ PopulationGenerator -> GodAgent -> PopulationAgent
 3. Copy `.env.example` to `.env` and update the values
    ```bash
    cp .env.example .env
-   # edit .env and set OPENAI_API_KEY
+   # edit `.env` and set OPENAI_API_KEY and other options
    ```
+   Additional environment variables are described in
+   [docs/configuration.md](docs/configuration.md).
 4. Run the simulation
    ```bash
    python main.py
