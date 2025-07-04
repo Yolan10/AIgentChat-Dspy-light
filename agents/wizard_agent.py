@@ -2,14 +2,13 @@ from pathlib import Path
 from collections import deque
 from typing import List, Dict, Iterable
 import dspy
-from dspy.teleprompt import MIPROv2
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 import config
 from core.token_tracker import tracker
 from core.utils import get_usage_tokens
-from core.dspy_utils import build_dataset, get_miprov2
+from core.dspy_utils import apply_dspy_optimizer, build_dataset as _build_dataset, get_miprov2
 from core.structured_logger import StructuredLogger
 from core.console_logger import ConsoleLogger
 import json
@@ -18,7 +17,7 @@ IMPROVED_PROMPTS_LOG = Path("logs/improved_prompts.log")
 
 
 def build_dataset(logs: Iterable[Dict]) -> List[dspy.Example]:
-    """Convert conversation logs with scores into a DSPy dataset."""
+    """Return a list of :class:`dspy.Example` for test convenience."""
     dataset: List[dspy.Example] = []
     for log in logs:
         score = log.get("score") or log.get("overall") or 0.0
@@ -87,11 +86,11 @@ class WizardAgent:
     def self_improve(self):
         self.logger.log("self_improve", step=self.conversation_count)
         self.console.log(f"Self improve step {self.conversation_count}")
-        dataset = build_dataset(self.history_buffer)
-        optimizer = get_miprov2(lambda ex: ex.score)
-        new_prompt = optimizer.compile(self.current_prompt, trainset=dataset)
-        if isinstance(new_prompt, str):
-            self.current_prompt = new_prompt
+        self.current_prompt = apply_dspy_optimizer(
+            self.current_prompt,
+            self.history_buffer,
+            get_opt=get_miprov2,
+        )
         avg_score = 0.0
         scores = [c.get("score") or 0 for c in self.history_buffer]
         if scores:
