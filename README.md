@@ -56,6 +56,7 @@ All runtime logs are stored in the `logs/` directory. The folder is kept under v
 The main application writes to `logs/system.log` and `logs/token_usage.json`.
 
 Use the helper script `scripts/clean_logs.py` to archive or clear old log files.
+Use `scripts/analyze_results.py` to summarize log statistics.
 
 ## Running tests
 
