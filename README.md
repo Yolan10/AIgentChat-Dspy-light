@@ -31,7 +31,8 @@ To launch the (currently experimental) dashboard run:
 ```bash
 python main.py --dashboard
 ```
-=======
+This will start a simple Flask app that displays a placeholder page.
+
 This project provides a simplified backend demonstrating a multi-agent research system. It uses OpenAI via LangChain and DSPy for prompt optimization.
 
 ## Usage
