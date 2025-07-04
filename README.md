@@ -28,6 +28,9 @@ export OPENAI_API_KEY=sk-...
 python main.py
 ```
 
+Logs are written to the `logs/` directory, which is created automatically if it
+does not already exist.
+
 To launch the (currently experimental) dashboard run:
 ```bash
 python main.py --dashboard
@@ -76,6 +79,7 @@ This project provides a simplified backend demonstrating a multi-agent research 
 
 All runtime logs are stored in the `logs/` directory. The folder is kept under version control using a `.gitkeep` file, while other log files are ignored via `.gitignore`.
 The main application writes to `logs/system.log` and `logs/token_usage.json`.
+`StructuredLogger` and the token tracker automatically create the `logs/` directory if it is missing.
 
 Use the helper script `scripts/clean_logs.py` to archive or clear old log files.
 Use `scripts/analyze_results.py` to summarize log statistics.

@@ -7,7 +7,7 @@ LOG_FILE = Path("logs/system.log")
 
 class StructuredLogger:
     def __init__(self):
-        LOG_FILE.parent.mkdir(exist_ok=True)
+        LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
         self.file = LOG_FILE.open("a")
 
     def log(self, message: str, **kwargs: Any):
