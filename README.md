@@ -23,7 +23,7 @@ PopulationGenerator -> GodAgent -> PopulationAgent
 Install dependencies and templates then run the analysis simulation:
 ```bash
 pip install -r requirements.txt
-python create_templates.py  # if templates are missing
+python scripts/create_templates.py  # if templates are missing
 export OPENAI_API_KEY=sk-...
 python main.py
 ```
