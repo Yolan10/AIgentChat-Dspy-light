@@ -57,3 +57,13 @@ The main application writes to `logs/system.log` and `logs/token_usage.json`.
 
 Use the helper script `scripts/clean_logs.py` to archive or clear old log files.
 
+## Running tests
+
+The test suite uses mocked API calls and does not require an OpenAI key. After
+installing the dependencies simply run:
+
+```bash
+pytest
+```
+
+
