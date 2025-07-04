@@ -8,22 +8,12 @@ from langchain.schema import SystemMessage, HumanMessage
 import config
 from core.token_tracker import tracker
 from core.utils import get_usage_tokens
-from core.dspy_utils import apply_dspy_optimizer, build_dataset as _build_dataset, get_miprov2
+from core.dspy_utils import apply_dspy_optimizer, get_miprov2
 from core.structured_logger import StructuredLogger
 from core.console_logger import ConsoleLogger
 import json
 
 IMPROVED_PROMPTS_LOG = Path("logs/improved_prompts.log")
-
-
-def build_dataset(logs: Iterable[Dict]) -> List[dspy.Example]:
-    """Return a list of :class:`dspy.Example` for test convenience."""
-    dataset: List[dspy.Example] = []
-    for log in logs:
-        score = log.get("score") or log.get("overall") or 0.0
-        conversation = " ".join(turn.get("text", "") for turn in log.get("turns", []))
-        dataset.append(dspy.Example(conversation=conversation, score=score))
-    return dataset
 
 class WizardAgent:
     def __init__(self, wizard_id: str):
