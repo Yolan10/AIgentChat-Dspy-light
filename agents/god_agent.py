@@ -11,7 +11,7 @@ class GodAgent:
         self.logger = StructuredLogger()
 
     def spawn_population_from_spec(self, spec: Dict, run_no: int, idx: int):
-        from .population_agent import PopulationAgent
+        from agents.population_agent import PopulationAgent
 
         timestamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
         agent_id = f"{run_no}.{idx}_{timestamp}"
