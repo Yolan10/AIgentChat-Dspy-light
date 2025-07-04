@@ -12,6 +12,7 @@ class EnhancedJudgeAgent:
         self.improvement_interval = improvement_interval
 
     def judge(self, conversation_log: dict) -> dict:
+        self.logger.log("judge_start", conversation=conversation_log.get("pop_agent_id"))
         prompt = f"Evaluate the following conversation: {conversation_log}"
         resp = self.llm.invoke([HumanMessage(content=prompt)])
         if getattr(resp, "usage_metadata", None):

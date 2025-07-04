@@ -22,6 +22,10 @@ class TokenTracker:
         LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
         LOG_FILE.write_text(json.dumps(self.data, indent=2))
 
+    def get_totals(self) -> Dict[str, int]:
+        """Return total token usage for the current run."""
+        return self.data.get(self.current_run, {"prompt": 0, "completion": 0})
+
 
 # Global instance
 tracker = TokenTracker()

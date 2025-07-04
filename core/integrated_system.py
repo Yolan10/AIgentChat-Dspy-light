@@ -45,9 +45,16 @@ class IntegratedSystem:
 
     def run(self):
         run_no = increment_run_number()
+        self.logger.log(
+            "run_start",
+            run_no=run_no,
+            population=config.POPULATION_SIZE,
+            model=config.LLM_MODEL,
+        )
         self.wizard.set_run(run_no)
         tracker.set_run(run_no)
         personas = self.generator.generate("hearing loss personas", config.POPULATION_SIZE)
+        self.logger.log("personas_generated", count=len(personas))
         agents = [self.god.spawn_population_from_spec(spec, run_no, i+1) for i, spec in enumerate(personas)]
         for idx, agent in enumerate(agents, start=1):
             log = self.wizard.converse_with(agent)
@@ -56,3 +63,15 @@ class IntegratedSystem:
                 self._wait_for_pending_judgments()
                 self.wizard.self_improve()
         self._wait_for_pending_judgments()
+        totals = tracker.get_totals()
+        if self.completed_judgments:
+            avg = sum(r[1]["overall"] for r in self.completed_judgments) / len(self.completed_judgments)
+        else:
+            avg = 0.0
+        self.logger.log(
+            "run_complete",
+            conversations=len(agents),
+            avg_score=avg,
+            prompt_tokens=totals["prompt"],
+            completion_tokens=totals["completion"],
+        )
