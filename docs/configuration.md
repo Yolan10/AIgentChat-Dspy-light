@@ -19,3 +19,6 @@ Variables defined in a `.env` file are loaded automatically, or you can export t
 Logs are printed to the console according to `LOG_LEVEL` and simultaneously
 written to `logs/system.log` in structured JSON format.
 
+The DSPy-related variables control the mini-batch sizes used during
+self‑improvement. Adjust them if you need larger or smaller update batches.
+
