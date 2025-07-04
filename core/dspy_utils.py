@@ -4,6 +4,7 @@ from typing import Iterable, Any
 
 from dspy.datasets.dataset import Dataset
 from dspy.teleprompt.mipro_optimizer_v2 import MIPROv2
+from dspy.signatures import make_signature
 import dspy
 
 import config
@@ -55,6 +56,16 @@ def get_miprov2(metric, prompt_model=None, task_model=None) -> MIPROv2:
     )
 
 
+def prompt_program(prompt: str) -> dspy.Predict:
+    """Return a minimal :class:`dspy.Predict` program using ``prompt``.
+
+    The prompt text becomes the instructions for a simple ``input -> output``
+    signature. The returned program can then be provided to DSPy optimizers.
+    """
+    sig = make_signature("input -> output", instructions=prompt)
+    return dspy.Predict(sig)
+
+
 def apply_dspy_optimizer(
     prompt: str,
     history: Iterable[Any],
@@ -83,11 +94,16 @@ def apply_dspy_optimizer(
     if task_model is not None:
         opt_kwargs["task_model"] = task_model
     optimizer = get_opt(metric, **opt_kwargs)
+    program = prompt_program(prompt)
     try:
-        new_prompt = optimizer.compile(prompt, trainset=trainset)
+        new_program = optimizer.compile(program, trainset=trainset)
     except AttributeError as e:
         if "predictors" in str(e):
             return prompt
         raise
-    return new_prompt if isinstance(new_prompt, str) else prompt
+    if isinstance(new_program, (dspy.Predict, dspy.ChainOfThought)):
+        return getattr(new_program.signature, "__doc__", prompt) or prompt
+    if isinstance(new_program, str):
+        return new_program
+    return prompt
 
