@@ -18,4 +18,9 @@ class GodAgent:
         persona = spec
         instruction = f"You are {persona.get('name')} with hearing loss experience: {persona.get('experience', '')}."
         agent = PopulationAgent(agent_id=agent_id, system_instruction=instruction, spec=spec)
+        self.logger.log(
+            "spawned_agent",
+            agent_id=agent_id,
+            persona=persona.get("name"),
+        )
         return agent

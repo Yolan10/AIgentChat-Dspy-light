@@ -25,6 +25,9 @@ def validate_environment():
 
 def run_simulation():
     validate_environment()
+    print(
+        f"Starting run with POPULATION_SIZE={config.POPULATION_SIZE}, LLM_MODEL={config.LLM_MODEL}"
+    )
     system = IntegratedSystem()
     system.run()
 

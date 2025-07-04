@@ -14,7 +14,9 @@ class PopulationGenerator:
         self.logger = StructuredLogger()
 
     def generate(self, instruction: str, n: int) -> List[dict]:
+        self.logger.log("population_generation_start", instruction=instruction, count=n)
         if not TEMPLATE_PATH.exists():
+            self.logger.log("population_template_missing")
             return self._fallback_personas(n)
         template = TEMPLATE_PATH.read_text()
         prompt = template.format(instruction=instruction, n=n)
@@ -24,12 +26,14 @@ class PopulationGenerator:
             candidates = extract_json_array(resp.content)
             if not candidates:
                 raise ValueError("parse failed")
+            self.logger.log("population_generated", generated=len(candidates))
             return candidates
         except Exception as e:
-            self.logger.log("population_generate_error", error=str(e))
+            self.logger.log("population_generate_error", level="error", error=str(e))
             return self._fallback_personas(n)
 
     def _fallback_personas(self, n: int) -> List[dict]:
+        self.logger.log("population_fallback", count=n)
         base = {"name": "Person", "age": 30, "experience": "general"}
         return [dict(base, name=f"Person{i}") for i in range(1, n + 1)]
 

@@ -23,6 +23,7 @@ class WizardAgent:
 
     def converse_with(self, pop_agent) -> Dict:
         log = {"wizard_id": self.wizard_id, "pop_agent_id": pop_agent.agent_id, "turns": []}
+        self.logger.log("conversation_start", agent_id=pop_agent.agent_id)
         intro = pop_agent.introduce()
         log["turns"].append({"speaker": "pop", "text": intro})
 
@@ -36,9 +37,19 @@ class WizardAgent:
             log["turns"].append({"speaker": "wizard", "text": wizard_reply})
             pop_resp = pop_agent.respond_to(wizard_reply)
             log["turns"].append({"speaker": "pop", "text": pop_resp})
+            self.logger.log(
+                "conversation_turn",
+                wizard_reply=wizard_reply,
+                pop_reply=pop_resp,
+            )
             message_history.append(HumanMessage(content=pop_resp))
         self.conversation_count += 1
         self.history_buffer.append(log)
+        self.logger.log(
+            "conversation_end",
+            agent_id=pop_agent.agent_id,
+            turns=len(log["turns"]),
+        )
         return log
 
     def add_judge_feedback(self, result: Dict):
