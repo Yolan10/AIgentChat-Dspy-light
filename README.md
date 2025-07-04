@@ -6,6 +6,7 @@ This project provides a simplified backend demonstrating a multi-agent research 
 - [Usage](docs/usage.md)
 - [Configuration](docs/configuration.md)
 - [Troubleshooting](docs/troubleshooting.md)
+- [Prompt Optimization](docs/prompt_optimization.md)
 
 ## Architecture Overview
 
