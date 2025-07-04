@@ -9,6 +9,7 @@ python main.py
 ```
 
 The system will generate a population of agents and simulate conversations with them using the integrated agent framework.
+After the run, execute `scripts/analyze_results.py` to summarize log data.
 
 ## Starting the (experimental) dashboard
 
