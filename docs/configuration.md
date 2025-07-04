@@ -16,3 +16,6 @@ Variables defined in a `.env` file are loaded automatically, or you can export t
 | `HISTORY_BUFFER_LIMIT` | Stored conversations retained by the wizard | `50` |
 | `LOG_LEVEL` | Verbosity of runtime logs | `INFO` |
 
+Logs are printed to the console according to `LOG_LEVEL` and simultaneously
+written to `logs/system.log` in structured JSON format.
+
