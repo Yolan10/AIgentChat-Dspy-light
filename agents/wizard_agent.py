@@ -9,8 +9,12 @@ from langchain.schema import SystemMessage, HumanMessage
 import config
 from core.token_tracker import tracker
 from core.utils import get_usage_tokens
+from core.dspy_utils import build_dataset, get_miprov2
 from core.structured_logger import StructuredLogger
 from core.console_logger import ConsoleLogger
+import json
+
+IMPROVED_PROMPTS_LOG = Path("logs/improved_prompts.log")
 
 
 def build_dataset(logs: Iterable[Dict]) -> List[dspy.Example]:
@@ -72,6 +76,10 @@ class WizardAgent:
     def add_judge_feedback(self, result: Dict):
         self.logger.log("judge_feedback", **result)
         self.console.log(f"Judge scored {result}")
+        if self.history_buffer:
+            conv = self.history_buffer[-1]
+            conv["score"] = result.get("overall", result.get("score"))
+            conv["judge_feedback"] = result
 
     def _should_self_improve(self) -> bool:
         return self.conversation_count in config.SELF_IMPROVE_AFTER
@@ -80,8 +88,21 @@ class WizardAgent:
         self.logger.log("self_improve", step=self.conversation_count)
         self.console.log(f"Self improve step {self.conversation_count}")
         dataset = build_dataset(self.history_buffer)
-        optimizer = MIPROv2(metric=lambda ex: ex.score)
+        optimizer = get_miprov2(lambda ex: ex.score)
         new_prompt = optimizer.compile(self.current_prompt, trainset=dataset)
         if isinstance(new_prompt, str):
             self.current_prompt = new_prompt
+        avg_score = 0.0
+        scores = [c.get("score") or 0 for c in self.history_buffer]
+        if scores:
+            avg_score = sum(scores) / len(scores)
+        entry = {
+            "id": f"improved_prompts_wizzard_{self.run_no}.{self.conversation_count}",
+            "prompt": self.current_prompt,
+            "avg_score": avg_score,
+        }
+        IMPROVED_PROMPTS_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with IMPROVED_PROMPTS_LOG.open("a") as f:
+            f.write(json.dumps(entry) + "\n")
+        self.logger.log("prompt_improved", **entry)
 

@@ -7,10 +7,6 @@ from pathlib import Path
 sys.modules.setdefault(
     "langchain_openai", types.SimpleNamespace(ChatOpenAI=lambda *a, **k: None)
 )
-sys.modules.setdefault(
-    "langchain.schema",
-    types.SimpleNamespace(SystemMessage=object, HumanMessage=object),
-)
 
 spec = importlib.util.spec_from_file_location("wizard_agent", Path("agents/wizard_agent.py"))
 wizard_agent = importlib.util.module_from_spec(spec)
@@ -32,7 +28,7 @@ def test_build_dataset_format():
     assert dataset[1].score == 0.9
 
 
-def test_self_improve_updates_prompt(monkeypatch):
+def test_self_improve_updates_prompt(monkeypatch, tmp_path):
     improved = "new prompt"
 
     class DummyMIPRO:
@@ -41,12 +37,25 @@ def test_self_improve_updates_prompt(monkeypatch):
         def compile(self, current_prompt, *, trainset):
             return improved
 
-    monkeypatch.setattr(wizard_agent, "MIPROv2", DummyMIPRO)
+    monkeypatch.setattr(wizard_agent, "get_miprov2", lambda *a, **k: DummyMIPRO(*a, **k))
+    monkeypatch.setattr(wizard_agent, "IMPROVED_PROMPTS_LOG", tmp_path / "imp.log")
     agent = WizardAgent("w1")
+    agent.set_run(1)
     agent.current_prompt = "old"
+    agent.conversation_count = 1
     agent.history_buffer.append({"turns": [{"text": "hi"}], "score": 1.0})
     agent.self_improve()
     assert agent.current_prompt == improved
+    log_entry = (tmp_path / "imp.log").read_text().strip().splitlines()[0]
+    assert improved in log_entry
+
+
+def test_add_judge_feedback_updates_history():
+    agent = WizardAgent("w1")
+    agent.history_buffer.append({"turns": []})
+    agent.add_judge_feedback({"overall": 0.6})
+    assert agent.history_buffer[-1]["score"] == 0.6
+
 
 
 

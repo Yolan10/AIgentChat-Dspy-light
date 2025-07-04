@@ -69,6 +69,21 @@ invokes DSPy's optimizers to update its prompt. The mini-batch sizes are
 controlled by the `DSPY_MIPRO_MINIBATCH_SIZE` and
 `DSPY_BOOTSTRAP_MINIBATCH_SIZE` environment variables.
 
+### Applying the optimizer to other agents
+
+`core.dspy_utils.apply_dspy_optimizer` provides a reusable wrapper around
+DSPy's `MIPROv2` optimizer. Any agent can supply a history of conversation logs
+and its current prompt text to receive an improved prompt. For example a
+`PopulationAgent` or `GodAgent` could refine their system instructions before
+interacting with the wizard:
+
+```python
+from core.dspy_utils import apply_dspy_optimizer
+
+agent.system_instruction = apply_dspy_optimizer(agent.system_instruction,
+                                                history_buffer)
+```
+
 ## Docker
 
 1. Build the image and run the default service
@@ -86,6 +101,8 @@ controlled by the `DSPY_MIPRO_MINIBATCH_SIZE` and
 
 All runtime logs are stored in the `logs/` directory. The folder is kept under version control using a `.gitkeep` file, while other log files are ignored via `.gitignore`.
 The main application writes to `logs/system.log` and `logs/token_usage.json`.
+Any prompts refined during self-improvement are appended to
+`logs/improved_prompts.log`.
 `StructuredLogger` and the token tracker automatically create the `logs/` directory if it is missing.
 Console output is controlled by the `LOG_LEVEL` environment variable and mirrors
 the structured entries written to `logs/system.log`.

@@ -51,3 +51,20 @@ def get_miprov2(metric, prompt_model=None, task_model=None) -> MIPROv2:
         max_labeled_demos=config.DSPY_MIPRO_MINIBATCH_SIZE,
     )
 
+
+def apply_dspy_optimizer(prompt: str, history: Iterable[Any], metric=None,
+                          prompt_model=None, task_model=None) -> str:
+    """Return ``prompt`` optimized on the provided ``history`` using DSPy.
+
+    ``history`` should be an iterable of conversation logs accepted by
+    :func:`build_dataset`. ``metric`` defaults to using the ``score`` attribute
+    of each :class:`dspy.Example`.
+    """
+    ds = build_dataset(deque(history))
+    if metric is None:
+        metric = lambda ex: ex.score
+    optimizer = get_miprov2(metric, prompt_model=prompt_model,
+                            task_model=task_model)
+    new_prompt = optimizer.compile(prompt, trainset=ds)
+    return new_prompt if isinstance(new_prompt, str) else prompt
+

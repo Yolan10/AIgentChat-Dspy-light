@@ -1,6 +1,6 @@
 from collections import deque
 import config
-from core.dspy_utils import build_dataset, get_miprov2
+from core.dspy_utils import build_dataset, get_miprov2, apply_dspy_optimizer
 from dspy.teleprompt.mipro_optimizer_v2 import MIPROv2
 
 
@@ -25,4 +25,22 @@ def test_get_miprov2_configured():
     assert isinstance(opt, MIPROv2)
     assert opt.max_labeled_demos == config.DSPY_MIPRO_MINIBATCH_SIZE
     assert opt.max_bootstrapped_demos == config.DSPY_BOOTSTRAP_MINIBATCH_SIZE
+
+
+def test_apply_dspy_optimizer(monkeypatch):
+    history = deque([
+        ({"turns": [{"speaker": "pop", "text": "hi"}]}, {"overall": 0.5}),
+    ])
+    improved = "better"
+
+    class DummyOpt:
+        def __init__(self, metric, prompt_model=None, task_model=None):
+            pass
+
+        def compile(self, prompt, *, trainset):
+            return improved
+
+    monkeypatch.setattr("core.dspy_utils.get_miprov2", lambda *a, **k: DummyOpt(*a, **k))
+    result = apply_dspy_optimizer("orig", history)
+    assert result == improved
 
