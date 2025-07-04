@@ -18,7 +18,7 @@ def validate_environment():
     ]
     for path in required_templates:
         if not Path(path).exists():
-            print(f"Missing template {path}. Run scripts/create_templates.py")
+            print(f"Missing template {path}. Run 'python -m scripts.create_templates'")
             raise SystemExit(1)
 
 

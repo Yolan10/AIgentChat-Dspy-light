@@ -11,7 +11,7 @@ export OPENAI_API_KEY=sk-...
 ## Templates not found
 If the system reports missing template files, generate them with:
 ```bash
-python create_templates.py
+python -m scripts.create_templates
 ```
 
 ## API connection errors

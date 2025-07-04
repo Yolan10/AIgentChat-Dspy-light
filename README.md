@@ -15,21 +15,21 @@ PopulationGenerator -> GodAgent -> PopulationAgent
                                \-> WizardAgent -> EnhancedJudgeAgent
 ```
 
-`main.py` wires these components together and exposes a command line interface.
+`scripts/main.py` wires these components together and exposes a command line interface.
 
 ## Quick Start
 
 Install dependencies and templates then run the analysis simulation:
 ```bash
 pip install -r requirements.txt
-python create_templates.py  # if templates are missing
+python -m scripts.create_templates  # if templates are missing
 export OPENAI_API_KEY=sk-...
-python main.py
+python -m scripts.main
 ```
 
 To launch the (currently experimental) dashboard run:
 ```bash
-python main.py --dashboard
+python -m scripts.main --dashboard
 ```
 =======
 This project provides a simplified backend demonstrating a multi-agent research system. It uses OpenAI via LangChain and DSPy for prompt optimization.
@@ -42,7 +42,7 @@ This project provides a simplified backend demonstrating a multi-agent research 
    ```
 2. Create default templates if they do not exist
    ```bash
-   python scripts/create_templates.py
+   python -m scripts.create_templates
    ```
 3. Copy `.env.example` to `.env` and update the values
    ```bash
@@ -51,7 +51,7 @@ This project provides a simplified backend demonstrating a multi-agent research 
    ```
 4. Run the simulation
    ```bash
-   python main.py
+   python -m scripts.main
    ```
 
 ## Docker

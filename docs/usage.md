@@ -5,7 +5,7 @@ This project demonstrates a simplified multi-agent research system. Once the dep
 ## Running the analysis simulation
 
 ```bash
-python main.py
+python -m scripts.main
 ```
 
 The system will generate a population of agents and simulate conversations with them using the integrated agent framework.
@@ -13,7 +13,7 @@ The system will generate a population of agents and simulate conversations with 
 ## Starting the (experimental) dashboard
 
 ```bash
-python main.py --dashboard
+python -m scripts.main --dashboard
 ```
 
 The dashboard is currently a placeholder and will simply print a message that it is not yet implemented.

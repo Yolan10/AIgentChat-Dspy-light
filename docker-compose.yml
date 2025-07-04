@@ -3,8 +3,8 @@ services:
   app:
     build: .
     env_file: .env
-    command: python main.py
+    command: python -m scripts.main
   dashboard:
     build: .
     env_file: .env
-    command: python main.py --dashboard
+    command: python -m scripts.main --dashboard

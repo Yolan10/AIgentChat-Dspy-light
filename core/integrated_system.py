@@ -4,7 +4,7 @@ from typing import List
 
 import config
 from core.structured_logger import StructuredLogger
-from advanced_features import PopulationGenerator
+from core.population_generator import PopulationGenerator
 from agents.god_agent import GodAgent
 from agents.wizard_agent import WizardAgent
 from agents.judge_agent import EnhancedJudgeAgent
