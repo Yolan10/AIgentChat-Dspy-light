@@ -12,21 +12,22 @@ sys.modules.setdefault(
 spec = importlib.util.spec_from_file_location("wizard_agent", Path("agents/wizard_agent.py"))
 wizard_agent = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(wizard_agent)
-build_dataset = wizard_agent.build_dataset
+from core.dspy_utils import build_dataset
 WizardAgent = wizard_agent.WizardAgent
 
 
 def test_build_dataset_format():
     logs = [
-        {"turns": [{"text": "a"}, {"text": "b"}], "overall": 0.3},
+        {"turns": [{"text": "a"}, {"text": "b"}], "score": 0.3},
         {"turns": [{"text": "c"}, {"text": "d"}], "score": 0.9},
     ]
     dataset = build_dataset(logs)
-    assert all(isinstance(ex, dspy.Example) for ex in dataset)
-    assert dataset[0].conversation == "a b"
-    assert dataset[0].score == 0.3
-    assert dataset[1].conversation == "c d"
-    assert dataset[1].score == 0.9
+    train = dataset.train
+    assert all(isinstance(ex, dspy.Example) for ex in train)
+    assert train[0].conversation == "None: a\nNone: b"
+    assert train[0].score == 0.3
+    assert train[1].conversation == "None: c\nNone: d"
+    assert train[1].score == 0.9
 
 
 def test_self_improve_updates_prompt(monkeypatch, tmp_path):
