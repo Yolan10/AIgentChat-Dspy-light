@@ -19,7 +19,7 @@ class TokenTracker:
         self.save()
 
     def save(self):
-        LOG_FILE.parent.mkdir(exist_ok=True)
+        LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
         LOG_FILE.write_text(json.dumps(self.data, indent=2))
 
 
