@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 from core.token_tracker import tracker
