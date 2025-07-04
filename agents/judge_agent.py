@@ -1,4 +1,4 @@
-from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 from core.structured_logger import StructuredLogger
 from core.token_tracker import tracker
