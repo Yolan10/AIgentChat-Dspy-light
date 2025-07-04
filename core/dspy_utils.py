@@ -52,8 +52,14 @@ def get_miprov2(metric, prompt_model=None, task_model=None) -> MIPROv2:
     )
 
 
-def apply_dspy_optimizer(prompt: str, history: Iterable[Any], metric=None,
-                          prompt_model=None, task_model=None) -> str:
+def apply_dspy_optimizer(
+    prompt: str,
+    history: Iterable[Any],
+    metric=None,
+    prompt_model=None,
+    task_model=None,
+    get_opt=None,
+) -> str:
     """Return ``prompt`` optimized on the provided ``history`` using DSPy.
 
     ``history`` should be an iterable of conversation logs accepted by
@@ -61,10 +67,24 @@ def apply_dspy_optimizer(prompt: str, history: Iterable[Any], metric=None,
     of each :class:`dspy.Example`.
     """
     ds = build_dataset(deque(history))
+    trainset = ds.train
+    if len(trainset) < 2:
+        trainset = trainset * 2
     if metric is None:
         metric = lambda ex: ex.score
-    optimizer = get_miprov2(metric, prompt_model=prompt_model,
-                            task_model=task_model)
-    new_prompt = optimizer.compile(prompt, trainset=ds)
+    if get_opt is None:
+        get_opt = get_miprov2
+    opt_kwargs = {}
+    if prompt_model is not None:
+        opt_kwargs["prompt_model"] = prompt_model
+    if task_model is not None:
+        opt_kwargs["task_model"] = task_model
+    optimizer = get_opt(metric, **opt_kwargs)
+    try:
+        new_prompt = optimizer.compile(prompt, trainset=trainset)
+    except AttributeError as e:
+        if "predictors" in str(e):
+            return prompt
+        raise
     return new_prompt if isinstance(new_prompt, str) else prompt
 
