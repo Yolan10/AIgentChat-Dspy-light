@@ -19,4 +19,12 @@ python main.py --dashboard
 
 This will start a minimal Flask application that serves a placeholder page at the root URL.
 
+## Self-improvement workflow
+
+During a run, every conversation is scored by the `EnhancedJudgeAgent`. When the
+conversation count matches values in `SELF_IMPROVE_AFTER`, the wizard uses these
+ratings with DSPy to refine its prompt. Batch sizes for the optimizers can be
+configured via `DSPY_MIPRO_MINIBATCH_SIZE` and
+`DSPY_BOOTSTRAP_MINIBATCH_SIZE`.
+
 

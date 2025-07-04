@@ -60,6 +60,15 @@ This will start a simple Flask app that displays a placeholder page.
    python main.py
    ```
 
+## Self-improvement with DSPy
+
+The `WizardAgent` periodically refines its prompt using DSPy. After each
+conversation, the `EnhancedJudgeAgent` assigns a rating. When a conversation
+number matches `SELF_IMPROVE_AFTER`, the wizard aggregates these ratings and
+invokes DSPy's optimizers to update its prompt. The mini-batch sizes are
+controlled by the `DSPY_MIPRO_MINIBATCH_SIZE` and
+`DSPY_BOOTSTRAP_MINIBATCH_SIZE` environment variables.
+
 ## Docker
 
 1. Build the image and run the default service
