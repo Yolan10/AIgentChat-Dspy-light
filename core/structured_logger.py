@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 
 import config
@@ -27,7 +27,11 @@ class StructuredLogger:
             self.logger.addHandler(handler)
 
     def log(self, message: str, level: str = "info", **kwargs: Any):
-        entry = {"time": datetime.utcnow().isoformat(), "message": message, **kwargs}
+        entry = {
+            "time": datetime.now(timezone.utc).isoformat(),
+            "message": message,
+            **kwargs,
+        }
         self.file.write(json.dumps(entry) + "\n")
         self.file.flush()
 
