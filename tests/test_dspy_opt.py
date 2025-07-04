@@ -2,6 +2,7 @@ import dspy
 import importlib.util
 import sys
 import types
+import json
 from pathlib import Path
 
 sys.modules.setdefault(
@@ -47,7 +48,9 @@ def test_self_improve_updates_prompt(monkeypatch, tmp_path):
     agent.self_improve()
     assert agent.current_prompt == improved
     log_entry = (tmp_path / "imp.log").read_text().strip().splitlines()[0]
-    assert improved in log_entry
+    entry = json.loads(log_entry)
+    assert entry["prompt"] == improved
+    assert entry["improver"] == "DummyMIPRO"
 
 
 def test_add_judge_feedback_updates_history():

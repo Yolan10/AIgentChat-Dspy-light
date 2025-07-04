@@ -102,7 +102,8 @@ agent.system_instruction = apply_dspy_optimizer(agent.system_instruction,
 All runtime logs are stored in the `logs/` directory. The folder is kept under version control using a `.gitkeep` file, while other log files are ignored via `.gitignore`.
 The main application writes to `logs/system.log` and `logs/token_usage.json`.
 Any prompts refined during self-improvement are appended to
-`logs/improved_prompts.log`.
+`logs/improved_prompts.log`. Each entry stores the improved prompt, the
+average score across the history and the DSPy improver type that generated it.
 `StructuredLogger` and the token tracker automatically create the `logs/` directory if it is missing.
 Console output is controlled by the `LOG_LEVEL` environment variable and mirrors
 the structured entries written to `logs/system.log`.

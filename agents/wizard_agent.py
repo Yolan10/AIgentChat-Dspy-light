@@ -91,6 +91,7 @@ class WizardAgent:
             self.history_buffer,
             get_opt=get_miprov2,
         )
+        improver_type = type(get_miprov2(lambda *_: 0)).__name__
         avg_score = 0.0
         scores = [c.get("score") or 0 for c in self.history_buffer]
         if scores:
@@ -99,6 +100,7 @@ class WizardAgent:
             "id": f"improved_prompts_wizzard_{self.run_no}.{self.conversation_count}",
             "prompt": self.current_prompt,
             "avg_score": avg_score,
+            "improver": improver_type,
         }
         IMPROVED_PROMPTS_LOG.parent.mkdir(parents=True, exist_ok=True)
         with IMPROVED_PROMPTS_LOG.open("a") as f:
