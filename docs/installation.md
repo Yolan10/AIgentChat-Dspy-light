@@ -13,7 +13,7 @@ Follow these steps to set up the project locally.
    ```
 3. Optionally create default templates if you have not done so.
    ```bash
-   python create_templates.py
+   python scripts/create_templates.py
    ```
 4. Set your OpenAI API key.
    ```bash
