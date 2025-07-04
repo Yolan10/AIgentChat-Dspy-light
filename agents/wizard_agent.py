@@ -1,6 +1,8 @@
 from pathlib import Path
 from collections import deque
 from typing import List, Dict
+
+from core import dspy_utils
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
@@ -60,6 +62,8 @@ class WizardAgent:
     def add_judge_feedback(self, result: Dict):
         self.logger.log("judge_feedback", **result)
         self.console.log(f"Judge scored {result}")
+        if self.history_buffer:
+            self.history_buffer[-1]["score"] = result.get("overall")
 
     def _should_self_improve(self) -> bool:
         return self.conversation_count in config.SELF_IMPROVE_AFTER
@@ -67,4 +71,23 @@ class WizardAgent:
     def self_improve(self):
         self.logger.log("self_improve", step=self.conversation_count)
         self.console.log(f"Self improve step {self.conversation_count}")
+
+        dataset = dspy_utils.build_dataset(self.history_buffer)
+        if not dataset:
+            self.logger.log("self_improve_skipped", reason="no_data")
+            self.console.log("No data available for self improvement", level="warning")
+            return
+
+        try:
+            new_prompt, metrics = dspy_utils.optimize_prompt(
+                self.current_prompt,
+                dataset,
+                config.DSPY_MIPRO_MINIBATCH_SIZE,
+            )
+            self.current_prompt = new_prompt
+            self.logger.log("prompt_updated", prompt=new_prompt, metrics=metrics)
+            self.console.log(f"Updated prompt -> {new_prompt[:60]}")
+        except Exception as e:
+            self.logger.log("self_improve_error", error=str(e))
+            self.console.log(f"Self improvement failed: {e}", level="error")
 
