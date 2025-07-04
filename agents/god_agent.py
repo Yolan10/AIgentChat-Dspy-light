@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 from core.structured_logger import StructuredLogger
