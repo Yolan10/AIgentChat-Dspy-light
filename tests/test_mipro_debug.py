@@ -25,9 +25,10 @@ def test_miprov2_self_improve(monkeypatch, tmp_path):
     improved = "optimized"
     called = {"flag": False}
 
-    def fake_compile(self, prompt, *, trainset):
+    def fake_compile(self, program, *, trainset):
         called["flag"] = True
-        return improved
+        program.signature.__doc__ = improved
+        return program
 
     monkeypatch.setattr(MIPROv2, "compile", fake_compile)
 

@@ -35,8 +35,9 @@ def test_self_improve_updates_prompt(monkeypatch, tmp_path):
     class DummyMIPRO:
         def __init__(self, metric):
             pass
-        def compile(self, current_prompt, *, trainset):
-            return improved
+        def compile(self, program, *, trainset):
+            program.signature.__doc__ = improved
+            return program
 
     monkeypatch.setattr(wizard_agent, "get_miprov2", lambda *a, **k: DummyMIPRO(*a, **k))
     monkeypatch.setattr(wizard_agent, "IMPROVED_PROMPTS_LOG", tmp_path / "imp.log")
