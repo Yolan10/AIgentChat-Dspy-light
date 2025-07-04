@@ -29,3 +29,32 @@ def extract_json_array(text: str):
     except Exception:
         return []
 
+
+def get_usage_tokens(usage_meta: Any) -> tuple[int, int]:
+    """Return prompt and completion token counts from usage metadata."""
+    if not usage_meta:
+        return 0, 0
+
+    if isinstance(usage_meta, dict):
+        prompt = (
+            usage_meta.get("input_tokens")
+            or usage_meta.get("prompt_tokens")
+            or 0
+        )
+        completion = (
+            usage_meta.get("output_tokens")
+            or usage_meta.get("completion_tokens")
+            or 0
+        )
+    else:
+        prompt = (
+            getattr(usage_meta, "input_tokens", None)
+            or getattr(usage_meta, "prompt_tokens", 0)
+        )
+        completion = (
+            getattr(usage_meta, "output_tokens", None)
+            or getattr(usage_meta, "completion_tokens", 0)
+        )
+
+    return int(prompt or 0), int(completion or 0)
+

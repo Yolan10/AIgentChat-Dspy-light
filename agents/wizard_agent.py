@@ -6,6 +6,7 @@ from langchain.schema import SystemMessage, HumanMessage
 
 import config
 from core.token_tracker import tracker
+from core.utils import get_usage_tokens
 from core.structured_logger import StructuredLogger
 
 class WizardAgent:
@@ -29,10 +30,8 @@ class WizardAgent:
         for _ in range(config.MAX_TURNS):
             resp = self.llm.invoke(message_history)
             if getattr(resp, "usage_metadata", None):
-                tracker.add_usage(
-                    resp.usage_metadata.input_tokens,
-                    resp.usage_metadata.output_tokens,
-                )
+                prompt_tokens, completion_tokens = get_usage_tokens(resp.usage_metadata)
+                tracker.add_usage(prompt_tokens, completion_tokens)
             wizard_reply = resp.content
             log["turns"].append({"speaker": "wizard", "text": wizard_reply})
             pop_resp = pop_agent.respond_to(wizard_reply)

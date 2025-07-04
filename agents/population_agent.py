@@ -4,6 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 from core.token_tracker import tracker
+from core.utils import get_usage_tokens
 
 @dataclass
 class PopulationAgent:
@@ -19,8 +20,8 @@ class PopulationAgent:
                   HumanMessage(content="Introduce yourself briefly.")]
         resp = self.llm.invoke(prompt)
         if getattr(resp, "usage_metadata", None):
-            tracker.add_usage(resp.usage_metadata.input_tokens,
-                             resp.usage_metadata.output_tokens)
+            prompt_tokens, completion_tokens = get_usage_tokens(resp.usage_metadata)
+            tracker.add_usage(prompt_tokens, completion_tokens)
         return resp.content
 
     def respond_to(self, message: str) -> str:
@@ -29,6 +30,6 @@ class PopulationAgent:
             HumanMessage(content=message),
         ])
         if getattr(resp, "usage_metadata", None):
-            tracker.add_usage(resp.usage_metadata.input_tokens,
-                             resp.usage_metadata.output_tokens)
+            prompt_tokens, completion_tokens = get_usage_tokens(resp.usage_metadata)
+            tracker.add_usage(prompt_tokens, completion_tokens)
         return resp.content
